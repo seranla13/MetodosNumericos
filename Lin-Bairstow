@@ -1,0 +1,178 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<locale.h>
+#include<math.h>
+
+int main(){
+    setlocale(LC_CTYPE,"Spanish");
+    int grado, i;
+    float A[1000];
+    printf("\tMétodo de Lin-Bairstow\n\n");
+    printf("¿De qué grado será tu polinomio? ");
+    scanf("%d", &grado);
+    printf("\n\tA0x^(n) + A1x^(n-1) + A2x^(n-2) + ... + An = 0\n\n");
+    i = 0;
+    while(i <= grado){
+        printf("Dadme A%d: ", i);
+        scanf("%f", &A[i]);
+        i++;
+    }
+    printf("\n\t");
+    i = 0;
+    while(i <= grado){
+        printf("%2.2f", A[i]);
+        if(i < grado){
+            printf("x^%d + ", grado-i);
+        }
+        i++;
+    }
+    printf(" = 0\n\n");
+    if(grado > 2){
+        int grado1, a = 0;
+        float B[1000];
+        do{
+            float P = 0, Q = 0, DP = 0, DQ = 0, P1 = 0, Q1 = 0, R = 0, S = 0, DP1 = 0, DQ1 = 0;
+            grado1 = grado-2;
+            do{
+                B[0] = A[0];
+                B[1] = A[1]-(P*B[0]);
+                i = 2;
+                while(i <= grado1){
+                    B[i] = A[i]-(P*B[i-1])-(Q*B[i-2]);
+                    i++;
+                }
+                R = A[grado-1]-(P*B[grado-2])-(Q*B[grado-3]);
+                S = A[grado]-(Q*B[grado-2]);
+                DP = R / B[grado1];
+                DQ = S / B[grado1];
+                P1 = P + DP;
+                Q1 = Q + DQ;
+                P = P1;
+                Q = Q1;
+                DP1 = sqrt(DP*DP);
+                DQ1 = sqrt(DQ*DQ);
+            }while(DP1 > 0.000001 && DQ1 > 0.000001);
+            float discriminante, dividendo, resultado1, resultado2;
+            discriminante = (P*P) -(4*Q);
+            dividendo = 2;
+            if(discriminante < 0){
+                float cantidad1, cantidad2, cantidad3;
+                cantidad1 = (-1*P) / dividendo;
+                cantidad2 = sqrt(-1*discriminante) / dividendo;
+                cantidad3 = -1 * cantidad2;
+                if(P == 0){
+                    cantidad1 = -cantidad1;
+                }
+                if(cantidad1 > 0){
+                    a++;
+                    printf("Resultado %d = %f + %fi\n", a, cantidad1, cantidad2);
+                    a++;
+                    printf("Resultado %d = %f %fi\n\n", a, cantidad1, cantidad3);
+                }
+                else{
+                    a++;
+                    printf("Resultado %d = %f + %fi\n", a, cantidad1, cantidad2);
+                    a++;
+                    printf("Resultado %d = %f %fi\n\n", a, cantidad1, cantidad3);
+                }
+            }
+            else{
+                a++;
+                printf("Resultado %d = %f\n", a, (sqrt(discriminante)-P)/dividendo);
+                a++;
+                printf("Resultado %d = %f\n\n", a, (-sqrt(discriminante)-P)/dividendo);
+            }
+            if(grado1 == 2){
+                discriminante = (B[1]*B[1]) -(4*B[0]*B[2]);
+                dividendo = 2*B[0];
+                if(discriminante < 0){
+                    float cantidad1, cantidad2, cantidad3;
+                    cantidad1 = (-1*B[1]) / dividendo;
+                    cantidad2 = sqrt(-1*discriminante) / dividendo;
+                    cantidad3 = -1 * cantidad2;
+                    if(B[1] == 0){
+                        cantidad1 = -cantidad1;
+                    }
+                    if(cantidad1 > 0){
+                        a++;
+                        printf("Resultado %d = %f + %fi\n", a, cantidad1, cantidad2);
+                        a++;
+                        printf("Resultado %d = %f %fi\n\n", a, cantidad1, cantidad3);
+                    }
+                    else{
+                        a++;
+                        printf("Resultado %d = %f + %fi\n", a, cantidad1, cantidad2);
+                        a++;
+                        printf("Resultado %d = %f %fi\n\n", a, cantidad1, cantidad3);
+                    }
+                }
+                else{
+                    a++;
+                    printf("Resultado %d = %f\n", a, (sqrt(discriminante)-B[1])/dividendo);
+                    a++;
+                    printf("Resultado %d = %f\n\n", a, (-sqrt(discriminante)-B[1])/dividendo);
+                }
+            }
+            if(grado1 == 1){
+                float resultado;
+                if(B[1] == 0){
+                    resultado = (B[1]) / B[0];
+                }
+                else{
+                    resultado = (-B[1]) / B[0];
+                }
+                a++;
+                printf("Resultado %d = %f\n\n", a, resultado);
+            }
+            if(grado1 > 2){
+                i = 0;
+                while(i <= grado1){
+                    A[i] = B[i];
+                    i++;
+                }
+                grado = grado1;
+            }
+        }while(grado1 > 2);
+    }
+    if(grado == 2){
+        float discriminante, dividendo, resultado1, resultado2;
+        discriminante = (A[1]*A[1]) -(4*A[0]*A[2]);
+        dividendo = 2*A[0];
+        if(discriminante < 0){
+            float cantidad1, cantidad2, cantidad3;
+            cantidad1 = (-1*A[1]) / dividendo;
+            cantidad2 = sqrt(-1*discriminante) / dividendo;
+            cantidad3 = -1 * cantidad2;
+            if(A[1] == 0){
+                cantidad1 = -cantidad1;
+            }
+            if(cantidad1 > 0){
+                printf("Resultado 1 = %f + %fi\n", cantidad1, cantidad2);
+                printf("Resultado 2 = %f %fi\n\n", cantidad1, cantidad3);
+            }
+            else{
+                printf("Resultado 1 = %f + %fi\n", cantidad1, cantidad2);
+                printf("Resultado 2 = %f %fi\n\n", cantidad1, cantidad3);
+            }
+        }
+        else{
+            printf("Resultado 1 = %f\n", (sqrt(discriminante)-A[1])/dividendo);
+            printf("Resultado 2 = %f\n\n", (-sqrt(discriminante)-A[1])/dividendo);
+        }
+    }
+    if(grado == 1){
+        float resultado;
+        if(A[1] == 0){
+            resultado = (A[1]) / A[0];
+        }
+        else{
+            resultado = (-A[1]) / A[0];
+        }
+        printf("Resultado = %f\n\n", resultado);
+    }
+    if(grado < 1){
+        printf("No se puede, reinicia el programa\n\n");
+    }
+    system("pause");
+    return 0;
+}
